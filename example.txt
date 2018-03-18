@@ -1,4 +1,4 @@
-extern void printi(int val)
+extern void printf(int val)
 
 int do_math(int a) {
   int x = a * 5
@@ -7,4 +7,4 @@ int do_math(int a) {
 
 echo(do_math(11))
 echo(do_math(12))
-printi(10)
+printf(10)

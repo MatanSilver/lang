@@ -7,4 +7,4 @@ int do_math(int a) {
 
 echo(do_math(11))
 echo(do_math(12))
-printf(10)
+#printf(10)

@@ -1,6 +1,6 @@
 #include "node.h"
 #include "codegen.h"
-#include "grammar.hpp"
+#include "parser.hpp"
 
 using namespace std;
 

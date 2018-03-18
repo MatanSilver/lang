@@ -4,3 +4,5 @@ src/lexer/tokens.cpp
 src/lexer/tokens.h
 src/parser/grammar.cpp
 src/parser/grammar.hpp
+src/parser/parser.cpp
+src/parser/parser.hpp

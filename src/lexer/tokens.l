@@ -1,7 +1,7 @@
 %{
 #include <string>
 #include "node.h"
-#include "grammar.hpp"
+#include "parser.hpp"
 
 #define SAVE_TOKEN  yylval.string = new std::string(yytext, yyleng)
 #define TOKEN(t)    (yylval.token = t)

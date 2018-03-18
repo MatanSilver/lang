@@ -1,6 +1,8 @@
 #include <iostream>
 #include "codegen.h"
 #include "node.h"
+#include "parser.hpp"
+#include "tokens.h"
 
 using namespace std;
 

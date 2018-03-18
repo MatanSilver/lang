@@ -39,7 +39,7 @@ CXXFLAGS ?= $(INC_FLAGS) -MMD -MP
 
 # main target
 # `llvm-config --libs core jit native --cxxflags --ldflags`
-$(BUILD_DIR)/$(TARGET_EXEC): $(MAIN_OBJS) $(BUILD_DIR)/src/lexer/tokens.cpp.o $(BUILD_DIR)/src/parser/grammar.cpp.o
+$(BUILD_DIR)/$(TARGET_EXEC): $(MAIN_OBJS) $(BUILD_DIR)/src/lexer/tokens.cpp.o $(BUILD_DIR)/src/parser/parser.cpp.o
 	$(CXX) $(MAIN_OBJS) -o $@ $(LDFLAGS) $(shell llvm-config --libs --cxxflags --ldflags)
 
 # test target
@@ -62,16 +62,16 @@ $(BUILD_DIR)/%.cpp.o: %.cpp
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(shell llvm-config --cxxflags) $(DEBUG_FLAGS) -c $< -o $@
 
 #parser c file and header
-$(SRC_DIR)/parser/grammar.cpp: $(SRC_DIR)/parser/grammar.y
+$(SRC_DIR)/parser/parser.cpp: $(SRC_DIR)/parser/parser.y
 	$(YACC) -d $< -o $@
 
 # parser object file
-$(BUILD_DIR)/src/parser/grammar.cpp.o: $(SRC_DIR)/parser/grammar.cpp
+$(BUILD_DIR)/src/parser/parser.cpp.o: $(SRC_DIR)/parser/parser.cpp
 	mkdir -p $(BUILD_DIR)/src/parser
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(shell llvm-config --cxxflags) $(DEBUG_FLAGS) -c $< -o $@
 
 # tokenizer c file and header
-$(SRC_DIR)/lexer/tokens.cpp: $(SRC_DIR)/lexer/tokens.l $(SRC_DIR)/parser/grammar.cpp
+$(SRC_DIR)/lexer/tokens.cpp: $(SRC_DIR)/lexer/tokens.l $(SRC_DIR)/parser/parser.cpp
 	$(LEX) -o $@ --header-file=$(SRC_DIR)/lexer/tokens.h $<
 
 # tokenizer object file
@@ -83,11 +83,11 @@ $(BUILD_DIR)/src/lexer/tokens.cpp.o: $(SRC_DIR)/lexer/tokens.cpp
 .PHONY: clean all test run install uninstall gen
 
 clean:
-	$(RM) -r $(BUILD_DIR) src/lexer/tokens.c src/lexer/tokens.h src/parser/grammar.c src/parser/grammar.h
+	$(RM) -r $(BUILD_DIR) src/lexer/tokens.cpp src/lexer/tokens.h src/parser/parser.cpp src/parser/parser.h
 
 all:	$(BUILD_DIR)/$(TEST_EXEC) $(BUILD_DIR)/$(TARGET_EXEC)
 
-gen: src/parser/grammar.c src/lexer/tokens.c
+gen: src/parser/parser.cpp src/lexer/tokens.cpp
 
 run: $(BUILD_DIR)/$(TARGET_EXEC)
 	$(BUILD_DIR)/$(TARGET_EXEC)

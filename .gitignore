@@ -1,0 +1,6 @@
+*.o
+build
+src/lexer/tokens.cpp
+src/lexer/tokens.h
+src/parser/grammar.cpp
+src/parser/grammar.hpp

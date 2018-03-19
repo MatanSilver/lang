@@ -2,7 +2,7 @@
 #include "codegen.h"
 #include "node.h"
 #include "parser.hpp"
-#include "tokens.h"
+#include "tokens.hpp"
 
 using namespace std;
 

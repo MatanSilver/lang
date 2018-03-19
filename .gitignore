@@ -2,6 +2,7 @@
 build
 src/lexer/tokens.cpp
 src/lexer/tokens.h
+src/lexer/tokens.hpp
 src/parser/grammar.cpp
 src/parser/grammar.hpp
 src/parser/parser.cpp

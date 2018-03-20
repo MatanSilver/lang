@@ -7,7 +7,7 @@ using namespace std;
 /* Compile the AST into a module */
 void CodeGenContext::generateCode(NBlock& root)
 {
-	std::cout << "Generating code...\n";
+	//std::cout << "Generating code...\n";
 
 	/* Create the top level interpreter function to call as entry */
 	vector<Type*> argTypes;
@@ -24,7 +24,7 @@ void CodeGenContext::generateCode(NBlock& root)
 	/* Print the bytecode in a human-readable format
 	   to see if our program compiled properly
 	 */
-	std::cout << "Code is generated.\n";
+	//std::cout << "Code is generated.\n";
 	// module->dump();
 
 	legacy::PassManager pm;
@@ -34,12 +34,12 @@ void CodeGenContext::generateCode(NBlock& root)
 
 /* Executes the AST by running the main function */
 GenericValue CodeGenContext::runCode() {
-	std::cout << "Running code...\n";
+	//std::cout << "Running code...\n";
 	ExecutionEngine *ee = EngineBuilder( unique_ptr<Module>(module) ).create();
 	ee->finalizeObject();
 	vector<GenericValue> noargs;
 	GenericValue v = ee->runFunction(mainFunction, noargs);
-	std::cout << "Code was run.\n";
+	//std::cout << "Code was run.\n";
 	return v;
 }
 
@@ -59,19 +59,19 @@ static Type *typeOf(const NIdentifier& type)
 
 Value* NInteger::codeGen(CodeGenContext& context)
 {
-	std::cout << "Creating integer: " << value << endl;
+	//std::cout << "Creating integer: " << value << endl;
 	return ConstantInt::get(Type::getInt64Ty(MyContext), value, true);
 }
 
 Value* NDouble::codeGen(CodeGenContext& context)
 {
-	std::cout << "Creating double: " << value << endl;
+	//std::cout << "Creating double: " << value << endl;
 	return ConstantFP::get(Type::getDoubleTy(MyContext), value);
 }
 
 Value* NIdentifier::codeGen(CodeGenContext& context)
 {
-	std::cout << "Creating identifier reference: " << name << endl;
+	//std::cout << "Creating identifier reference: " << name << endl;
 	if (context.locals().find(name) == context.locals().end()) {
 		std::cerr << "undeclared variable " << name << endl;
 		return NULL;
@@ -91,13 +91,13 @@ Value* NMethodCall::codeGen(CodeGenContext& context)
 		args.push_back((**it).codeGen(context));
 	}
 	CallInst *call = CallInst::Create(function, makeArrayRef(args), "", context.currentBlock());
-	std::cout << "Creating method call: " << id.name << endl;
+	//std::cout << "Creating method call: " << id.name << endl;
 	return call;
 }
 
 Value* NBinaryOperator::codeGen(CodeGenContext& context)
 {
-	std::cout << "Creating binary operation " << op << endl;
+	//std::cout << "Creating binary operation " << op << endl;
 	Instruction::BinaryOps instr;
 	switch (op) {
 		case TPLUS: 	instr = Instruction::Add; goto math;
@@ -117,7 +117,7 @@ math:
 
 Value* NAssignment::codeGen(CodeGenContext& context)
 {
-	std::cout << "Creating assignment for " << lhs.name << endl;
+	//std::cout << "Creating assignment for " << lhs.name << endl;
 	if (context.locals().find(lhs.name) == context.locals().end()) {
 		std::cerr << "undeclared variable " << lhs.name << endl;
 		return NULL;
@@ -130,22 +130,22 @@ Value* NBlock::codeGen(CodeGenContext& context)
 	StatementList::const_iterator it;
 	Value *last = NULL;
 	for (it = statements.begin(); it != statements.end(); it++) {
-		std::cout << "Generating code for " << typeid(**it).name() << endl;
+		//std::cout << "Generating code for " << typeid(**it).name() << endl;
 		last = (**it).codeGen(context);
 	}
-	std::cout << "Creating block" << endl;
+	//std::cout << "Creating block" << endl;
 	return last;
 }
 
 Value* NExpressionStatement::codeGen(CodeGenContext& context)
 {
-	std::cout << "Generating code for " << typeid(expression).name() << endl;
+	//std::cout << "Generating code for " << typeid(expression).name() << endl;
 	return expression.codeGen(context);
 }
 
 Value* NReturnStatement::codeGen(CodeGenContext& context)
 {
-	std::cout << "Generating return code for " << typeid(expression).name() << endl;
+	//std::cout << "Generating return code for " << typeid(expression).name() << endl;
 	Value *returnValue = expression.codeGen(context);
 	context.setCurrentReturnValue(returnValue);
 	return returnValue;
@@ -153,7 +153,7 @@ Value* NReturnStatement::codeGen(CodeGenContext& context)
 
 Value* NVariableDeclaration::codeGen(CodeGenContext& context)
 {
-	std::cout << "Creating variable declaration " << type.name << " " << id.name << endl;
+	//std::cout << "Creating variable declaration " << type.name << " " << id.name << endl;
   //AllocaInst *alloc = new AllocaInst(typeOf(type), id.name.c_str(), context.currentBlock());
   //ConstantInt::get(Type::getInt64Ty(MyContext), value, true);
   AllocaInst *alloc = new AllocaInst(typeOf(type), 0, id.name.c_str(), context.currentBlock());
@@ -205,6 +205,6 @@ Value* NFunctionDeclaration::codeGen(CodeGenContext& context)
 	ReturnInst::Create(MyContext, context.getCurrentReturnValue(), bblock);
 
 	context.popBlock();
-	std::cout << "Creating function: " << id.name << endl;
+	//std::cout << "Creating function: " << id.name << endl;
 	return function;
 }
